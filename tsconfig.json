@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "declaration": true,
+        "watch": true
+        
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "compileOnSave": true,
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
