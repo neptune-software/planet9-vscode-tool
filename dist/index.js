@@ -61,7 +61,7 @@ function planet9Proxy() {
                     server = _c.sent();
                     config.routes.forEach(function (route) {
                         obj[route.path] = {
-                            target: server,
+                            target: "https://server.test/",
                             secure: false,
                             onProxyReq: function onProxyReq(proxyReq, req, res) {
                                 if (route.sendCookie) {
@@ -69,6 +69,24 @@ function planet9Proxy() {
                                 }
                             },
                             onProxyRes: function onProxyRes(proxyRes, req, res) {
+                            },
+                            onError: function onError(err, req, res) {
+                                return __awaiter(this, void 0, void 0, function () {
+                                    var route;
+                                    return __generator(this, function (_a) {
+                                        switch (_a.label) {
+                                            case 0:
+                                                route = config.routes.find(function (r) { return r.path === req.url; });
+                                                console.log("error", err);
+                                                if (!route) return [3 /*break*/, 2];
+                                                return [4 /*yield*/, writeError(req.url, err)];
+                                            case 1:
+                                                _a.sent();
+                                                _a.label = 2;
+                                            case 2: return [2 /*return*/];
+                                        }
+                                    });
+                                });
                             }
                         };
                     });
@@ -78,6 +96,24 @@ function planet9Proxy() {
     });
 }
 exports.planet9Proxy = planet9Proxy;
+var errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");
+var errorHandlePromise = fs_1.promises.open(errorFile, 'w');
+function writeError(url, error) {
+    return __awaiter(this, void 0, void 0, function () {
+        var errorFile;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, errorHandlePromise];
+                case 1:
+                    errorFile = _a.sent();
+                    return [4 /*yield*/, errorFile.appendFile("{\"url\": \"" + url + "\", \"error\": \"" + error.message + "\"},\n")];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function getServer() {
     var service = 'Neptune-Software';
     var account = 'server';

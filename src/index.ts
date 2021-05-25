@@ -9,6 +9,9 @@ interface Config {
     routes: {
         sendCookie: boolean;
         path: string;
+        errors: {
+            error: string
+        }[]
     }[];
     server: string;
 }
@@ -26,7 +29,7 @@ export async function planet9Proxy(): Promise<Proxy> {
 
     config.routes.forEach(route => {
         obj[route.path] = {
-            target: server,
+            target: "https://server.test/",
             secure: false,
             onProxyReq: function onProxyReq(proxyReq: http.ClientRequest, req: Request, res: Response) {
                 if (route.sendCookie) {
@@ -34,12 +37,29 @@ export async function planet9Proxy(): Promise<Proxy> {
                 }
             },
             onProxyRes: function onProxyRes(proxyRes: http.IncomingMessage, req: Request, res: Response) {
+            },
+            onError: async function onError(err: Error, req: Request, res: Response) {
+                const route = config.routes.find(r => r.path === req.url);
+                console.log("error", err);
+                if (route) {
+                    await writeError(req.url, err)
+                }
             }
         };
 
     });
 
     return obj;
+
+}
+
+const errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");
+const errorHandlePromise = fs.open(errorFile, 'w');
+
+async function writeError(url: string, error: Error) {
+    const errorFile = await errorHandlePromise;
+
+    await errorFile.appendFile(`{"url": "${url}", "error": "${error.message}"},\n`);
 
 }
 

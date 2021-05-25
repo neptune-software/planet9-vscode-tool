@@ -1,5 +1,5 @@
 {
-	"name": "planet9-vscode-proxy",
+	"name": "planet9-vscode-tool",
 	"version": "1.0.0",
 	"description": "",
 	"main": "./dist/index.js",
