@@ -29,7 +29,7 @@ export async function planet9Proxy(): Promise<Proxy> {
 
     config.routes.forEach(route => {
         obj[route.path] = {
-            target: "https://server.test/",
+            target: server,
             secure: false,
             onProxyReq: function onProxyReq(proxyReq: http.ClientRequest, req: Request, res: Response) {
                 if (route.sendCookie) {

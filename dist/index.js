@@ -61,7 +61,7 @@ function planet9Proxy() {
                     server = _c.sent();
                     config.routes.forEach(function (route) {
                         obj[route.path] = {
-                            target: "https://server.test/",
+                            target: server,
                             secure: false,
                             onProxyReq: function onProxyReq(proxyReq, req, res) {
                                 if (route.sendCookie) {
