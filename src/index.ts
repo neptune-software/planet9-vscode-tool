@@ -52,7 +52,7 @@ export async function planet9Proxy(): Promise<Proxy> {
 
 }
 
-export async function projectName() {
+export async function getProjectName() {
     const cwd = process.cwd();
     const packagePath = path.join(cwd, "package.json");
 

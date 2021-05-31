@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.projectName = exports.planet9Proxy = void 0;
+exports.getProjectName = exports.planet9Proxy = void 0;
 var keytar = require("keytar");
 var path = require("path");
 var fs_1 = require("fs");
@@ -96,7 +96,7 @@ function planet9Proxy() {
     });
 }
 exports.planet9Proxy = planet9Proxy;
-function projectName() {
+function getProjectName() {
     var _a;
     return __awaiter(this, void 0, void 0, function () {
         var cwd, packagePath, pkg, json;
@@ -116,7 +116,7 @@ function projectName() {
         });
     });
 }
-exports.projectName = projectName;
+exports.getProjectName = getProjectName;
 var errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");
 var errorHandlePromise = fs_1.promises.open(errorFile, 'w');
 function writeError(url, error) {

@@ -3,5 +3,5 @@ declare type Proxy = {
     [route: string]: Options;
 };
 export declare function planet9Proxy(): Promise<Proxy>;
-export declare function projectName(): Promise<any>;
+export declare function getProjectName(): Promise<any>;
 export {};
