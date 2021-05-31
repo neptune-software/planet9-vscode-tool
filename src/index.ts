@@ -1,5 +1,4 @@
-import * as webpack from 'webpack';
-import { Options, RequestHandler, Request, Response } from 'http-proxy-middleware/dist/types'
+import { Options, Request, Response } from 'http-proxy-middleware/dist/types'
 import * as http from 'http';
 import * as keytar from 'keytar';
 import * as path from 'path';
@@ -51,6 +50,16 @@ export async function planet9Proxy(): Promise<Proxy> {
 
     return obj;
 
+}
+
+export async function projectName() {
+    const cwd = process.cwd();
+    const packagePath = path.join(cwd, "package.json");
+
+    const pkg = await fs.readFile(packagePath);
+    const json = JSON.parse(pkg.toString());
+    if (!json?.planet9?.projectName) throw Error('Unable to read planet9.projectName from package.json');
+    return json.planet9.projectName;
 }
 
 const errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");

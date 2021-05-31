@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.planet9Proxy = void 0;
+exports.projectName = exports.planet9Proxy = void 0;
 var keytar = require("keytar");
 var path = require("path");
 var fs_1 = require("fs");
@@ -96,6 +96,27 @@ function planet9Proxy() {
     });
 }
 exports.planet9Proxy = planet9Proxy;
+function projectName() {
+    var _a;
+    return __awaiter(this, void 0, void 0, function () {
+        var cwd, packagePath, pkg, json;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    cwd = process.cwd();
+                    packagePath = path.join(cwd, "package.json");
+                    return [4 /*yield*/, fs_1.promises.readFile(packagePath)];
+                case 1:
+                    pkg = _b.sent();
+                    json = JSON.parse(pkg.toString());
+                    if (!((_a = json === null || json === void 0 ? void 0 : json.planet9) === null || _a === void 0 ? void 0 : _a.projectName))
+                        throw Error('Unable to read planet9.projectName from package.json');
+                    return [2 /*return*/, json.planet9.projectName];
+            }
+        });
+    });
+}
+exports.projectName = projectName;
 var errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");
 var errorHandlePromise = fs_1.promises.open(errorFile, 'w');
 function writeError(url, error) {
