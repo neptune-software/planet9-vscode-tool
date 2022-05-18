@@ -63,6 +63,7 @@ function planet9Proxy() {
                         obj[route.path] = {
                             target: server,
                             secure: false,
+                            changeOrigin: true,
                             onProxyReq: function onProxyReq(proxyReq, req, res) {
                                 if (route.sendCookie) {
                                     proxyReq.setHeader('cookie', cookie);

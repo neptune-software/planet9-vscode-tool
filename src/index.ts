@@ -30,6 +30,7 @@ export async function planet9Proxy(): Promise<Proxy> {
         obj[route.path] = {
             target: server,
             secure: false,
+            changeOrigin: true,
             onProxyReq: function onProxyReq(proxyReq: http.ClientRequest, req: Request, res: Response) {
                 if (route.sendCookie) {
                     proxyReq.setHeader('cookie', cookie);
