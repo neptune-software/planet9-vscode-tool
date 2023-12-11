@@ -134,15 +134,20 @@ function writeError(url, error) {
 }
 function getSession() {
     return __awaiter(this, void 0, void 0, function () {
-        var storagePath, b64;
+        var storagePath, b64, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    _a.trys.push([0, 2, , 3]);
                     storagePath = "/tmp/ns-temp-storage";
                     return [4 /*yield*/, fs_1.promises.readFile(storagePath)];
                 case 1:
                     b64 = _a.sent();
-                    return [2 /*return*/, JSON.parse(b64.toString('ascii'))];
+                    return [2 /*return*/, JSON.parse(Buffer.from(b64.toString(), 'base64').toString('ascii'))];
+                case 2:
+                    e_1 = _a.sent();
+                    throw "Unable to read/decode session file";
+                case 3: return [2 /*return*/];
             }
         });
     });

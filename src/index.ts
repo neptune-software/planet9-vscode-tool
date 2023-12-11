@@ -73,7 +73,11 @@ async function writeError(url: string, error: Error) {
 }
 
 async function getSession(): Promise<{ cookie: string, url: string }> {
-    const storagePath = "/tmp/ns-temp-storage"
-    const b64 = await fs.readFile(storagePath);
-    return JSON.parse(b64.toString('ascii'));
+    try {
+        const storagePath = "/tmp/ns-temp-storage";
+        const b64 = await fs.readFile(storagePath);
+        return JSON.parse(Buffer.from(b64.toString(), 'base64').toString('ascii'));
+    } catch(e) {
+        throw "Unable to read/decode session file";
+    }
 }
