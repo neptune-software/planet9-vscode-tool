@@ -1,8 +1,8 @@
 import { Options, Request, Response } from 'http-proxy-middleware/dist/types'
 import * as http from 'http';
-import * as keytar from 'keytar';
-import * as path from 'path';
+import { join } from 'path';
 import { promises as fs } from 'fs';
+import { tmpdir } from 'os';
 
 interface Config {
     routes: {
@@ -16,10 +16,14 @@ interface Config {
 }
 
 type Proxy = { [route: string]: Options }
+
+const errorFile = join(process.cwd(), ".planet9", "routeErrors.json");
+const errorHandlePromise = fs.open(errorFile, 'w');
+
 export async function planet9Proxy(): Promise<Proxy> {
 
     const cwd = process.cwd();
-    const configPath = path.join(cwd, ".planet9", "config.json")
+    const configPath = join(cwd, ".planet9", "config.json")
     const config = <Config>JSON.parse((await fs.readFile(configPath)).toString());
 
     const obj: Proxy = {};
@@ -54,7 +58,7 @@ export async function planet9Proxy(): Promise<Proxy> {
 
 export async function getProjectName() {
     const cwd = process.cwd();
-    const packagePath = path.join(cwd, "package.json");
+    const packagePath = join(cwd, "package.json");
 
     const pkg = await fs.readFile(packagePath);
     const json = JSON.parse(pkg.toString());
@@ -62,22 +66,18 @@ export async function getProjectName() {
     return json.planet9.projectName;
 }
 
-const errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");
-const errorHandlePromise = fs.open(errorFile, 'w');
-
 async function writeError(url: string, error: Error) {
     const errorFile = await errorHandlePromise;
 
     await errorFile.appendFile(`{"url": "${url}", "error": "${error.message}"},\n`);
-
 }
 
 async function getSession(): Promise<{ cookie: string, url: string }> {
     try {
-        const storagePath = "/tmp/ns-temp-storage";
+        const storagePath = join(tmpdir(), 'ns-temp-storage');
         const b64 = await fs.readFile(storagePath);
         return JSON.parse(Buffer.from(b64.toString(), 'base64').toString('ascii'));
-    } catch(e) {
+    } catch (e) {
         throw "Unable to read/decode session file";
     }
 }

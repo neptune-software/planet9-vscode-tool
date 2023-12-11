@@ -37,8 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.getProjectName = exports.planet9Proxy = void 0;
-var path = require("path");
+var path_1 = require("path");
 var fs_1 = require("fs");
+var os_1 = require("os");
+var errorFile = path_1.join(process.cwd(), ".planet9", "routeErrors.json");
+var errorHandlePromise = fs_1.promises.open(errorFile, 'w');
 function planet9Proxy() {
     return __awaiter(this, void 0, void 0, function () {
         var cwd, configPath, config, _a, _b, obj, _c, cookie, server;
@@ -46,7 +49,7 @@ function planet9Proxy() {
             switch (_d.label) {
                 case 0:
                     cwd = process.cwd();
-                    configPath = path.join(cwd, ".planet9", "config.json");
+                    configPath = path_1.join(cwd, ".planet9", "config.json");
                     _b = (_a = JSON).parse;
                     return [4 /*yield*/, fs_1.promises.readFile(configPath)];
                 case 1:
@@ -101,7 +104,7 @@ function getProjectName() {
             switch (_b.label) {
                 case 0:
                     cwd = process.cwd();
-                    packagePath = path.join(cwd, "package.json");
+                    packagePath = path_1.join(cwd, "package.json");
                     return [4 /*yield*/, fs_1.promises.readFile(packagePath)];
                 case 1:
                     pkg = _b.sent();
@@ -114,8 +117,6 @@ function getProjectName() {
     });
 }
 exports.getProjectName = getProjectName;
-var errorFile = path.join(process.cwd(), ".planet9", "routeErrors.json");
-var errorHandlePromise = fs_1.promises.open(errorFile, 'w');
 function writeError(url, error) {
     return __awaiter(this, void 0, void 0, function () {
         var errorFile;
@@ -139,7 +140,7 @@ function getSession() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    storagePath = "/tmp/ns-temp-storage";
+                    storagePath = path_1.join(os_1.tmpdir(), 'ns-temp-storage');
                     return [4 /*yield*/, fs_1.promises.readFile(storagePath)];
                 case 1:
                     b64 = _a.sent();
