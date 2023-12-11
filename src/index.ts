@@ -23,8 +23,7 @@ export async function planet9Proxy(): Promise<Proxy> {
     const config = <Config>JSON.parse((await fs.readFile(configPath)).toString());
 
     const obj: Proxy = {};
-    const cookie = await getCookie();
-    const server = await getServer();
+    const { cookie, url: server } = await getSession();
 
     config.routes.forEach(route => {
         obj[route.path] = {
@@ -73,14 +72,8 @@ async function writeError(url: string, error: Error) {
 
 }
 
-function getServer() {
-    const service = 'Neptune-Software';
-    const account = 'server';
-    return keytar.getPassword(service, account);
-}
-
-function getCookie() {
-    const service = 'Neptune-Software';
-    const account = 'cookie';
-    return keytar.getPassword(service, account);
+async function getSession(): Promise<{ cookie: string, url: string }> {
+    const storagePath = "/tmp/ns-temp-storage"
+    const b64 = await fs.readFile(storagePath);
+    return JSON.parse(b64.toString('ascii'));
 }

@@ -37,28 +37,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.getProjectName = exports.planet9Proxy = void 0;
-var keytar = require("keytar");
 var path = require("path");
 var fs_1 = require("fs");
 function planet9Proxy() {
     return __awaiter(this, void 0, void 0, function () {
-        var cwd, configPath, config, _a, _b, obj, cookie, server;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var cwd, configPath, config, _a, _b, obj, _c, cookie, server;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     cwd = process.cwd();
                     configPath = path.join(cwd, ".planet9", "config.json");
                     _b = (_a = JSON).parse;
                     return [4 /*yield*/, fs_1.promises.readFile(configPath)];
                 case 1:
-                    config = _b.apply(_a, [(_c.sent()).toString()]);
+                    config = _b.apply(_a, [(_d.sent()).toString()]);
                     obj = {};
-                    return [4 /*yield*/, getCookie()];
+                    return [4 /*yield*/, getSession()];
                 case 2:
-                    cookie = _c.sent();
-                    return [4 /*yield*/, getServer()];
-                case 3:
-                    server = _c.sent();
+                    _c = _d.sent(), cookie = _c.cookie, server = _c.url;
                     config.routes.forEach(function (route) {
                         obj[route.path] = {
                             target: server,
@@ -136,13 +132,18 @@ function writeError(url, error) {
         });
     });
 }
-function getServer() {
-    var service = 'Neptune-Software';
-    var account = 'server';
-    return keytar.getPassword(service, account);
-}
-function getCookie() {
-    var service = 'Neptune-Software';
-    var account = 'cookie';
-    return keytar.getPassword(service, account);
+function getSession() {
+    return __awaiter(this, void 0, void 0, function () {
+        var storagePath, b64;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    storagePath = "/tmp/ns-temp-storage";
+                    return [4 /*yield*/, fs_1.promises.readFile(storagePath)];
+                case 1:
+                    b64 = _a.sent();
+                    return [2 /*return*/, JSON.parse(b64.toString('ascii'))];
+            }
+        });
+    });
 }
